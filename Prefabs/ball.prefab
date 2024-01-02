@@ -1,0 +1,73 @@
+{
+  "RootObject": {
+    "Id": "01a5cee8-b620-40f7-b474-64911c3b98b4",
+    "Name": "ball",
+    "Scale": "0.5,0.5,0.5",
+    "Enabled": true,
+    "Components": [
+      {
+        "__type": "SphereCollider",
+        "__enabled": true,
+        "Center": "0,0,0",
+        "IsTrigger": false,
+        "Radius": 30.800053,
+        "Static": false,
+        "Surface": null
+      },
+      {
+        "__type": "Rigidbody",
+        "__enabled": true,
+        "AngularDamping": 0,
+        "Gravity": true,
+        "LinearDamping": 0,
+        "Locking": {
+          "X": true,
+          "Pitch": true,
+          "Yaw": true
+        }
+      },
+      {
+        "__type": "BallComponent",
+        "__enabled": true,
+        "Emojis": [
+          "\uD83D\uDE42",
+          "\u263A\uFE0F",
+          "\uD83D\uDE00",
+          "\uD83E\uDD14",
+          "\uD83D\uDE08",
+          "\uD83D\uDE21",
+          "\uD83D\uDE0C",
+          "\uD83E\uDD70",
+          "\uD83D\uDE02",
+          "\uD83D\uDE2D",
+          "\uD83E\uDD2A",
+          "\uD83D\uDE0E"
+        ],
+        "Size": 1
+      }
+    ],
+    "Children": [
+      {
+        "Id": "d94739a5-67a8-4c5b-a278-d65be043f710",
+        "Name": "Visual",
+        "Position": "0,0,2.532715",
+        "Enabled": true,
+        "Components": [
+          {
+            "__type": "TextRenderer",
+            "__enabled": true,
+            "Color": "1,1,1,1",
+            "FontFamily": "Poppins",
+            "FontSize": 128,
+            "Scale": 0,
+            "Text": "\uD83E\uDD13"
+          }
+        ]
+      }
+    ]
+  },
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "__references": []
+}

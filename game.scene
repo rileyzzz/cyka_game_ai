@@ -1,0 +1,211 @@
+{
+  "GameObjects": [
+    {
+      "Id": "579135df-f88d-48ba-a85e-a40ed0a7bae5",
+      "Name": "Main Camera",
+      "Position": "-834.6442,0.0003030993,374.7838",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "CameraComponent",
+          "__enabled": true,
+          "BackgroundColor": "0.15842,0.15842,0.15842,1",
+          "ClearFlags": "All",
+          "FieldOfView": 57.82,
+          "IsMainCamera": true,
+          "Orthographic": true,
+          "OrthographicHeight": 964.4029,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        }
+      ]
+    },
+    {
+      "Id": "8be1af88-ef68-47c8-8bd7-271d6a9e78ff",
+      "Name": "Directional Light",
+      "Position": "0,0,200",
+      "Rotation": "0.1173451,0.55624,-0.04231617,0.8216059",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "DirectionalLight",
+          "__enabled": true,
+          "LightColor": "0.91373,0.98039,1,1",
+          "Shadows": true,
+          "SkyColor": "0.05882,0.07451,0.08235,1"
+        }
+      ]
+    },
+    {
+      "Id": "6cd3aaa5-9f58-4487-b297-5f9fbdec3ba5",
+      "Name": "Dropper",
+      "Position": "0,0,749.8726",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "ModelRenderer",
+          "__enabled": false,
+          "BodyGroups": 18446744073709551615,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Model": "models/dev/box.vmdl",
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Dropper",
+          "__enabled": true,
+          "BallPrefab": "prefabs/ball.prefab",
+          "LerpSpeed": 10,
+          "Range": 188,
+          "Speed": 250
+        }
+      ],
+      "Children": [
+        {
+          "Id": "89d5f886-3725-4edf-a9c7-d912f823f06d",
+          "Name": "Visual",
+          "Position": "0,4.400688,33.73767",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "TextRenderer",
+              "__enabled": true,
+              "Color": "1,1,1,1",
+              "FontFamily": "Poppins",
+              "FontSize": 128,
+              "Scale": 0.34,
+              "Text": "\uD83D\uDC47"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "3b0d1638-9fc4-4626-81d6-0aa972ba73b8",
+      "Name": "Board",
+      "Enabled": true,
+      "Children": [
+        {
+          "Id": "7779db12-97f4-411c-a0a5-f557025048f9",
+          "Name": "Cube",
+          "Position": "0,0,-2.35469",
+          "Scale": "1,10.96497,1",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "ModelRenderer",
+              "__enabled": false,
+              "BodyGroups": 18446744073709551615,
+              "MaterialGroup": null,
+              "MaterialOverride": null,
+              "Model": "models/dev/box.vmdl",
+              "RenderType": "On",
+              "Tint": "1,1,1,1"
+            },
+            {
+              "__type": "BoxCollider",
+              "__enabled": true,
+              "Center": "0,0,0",
+              "IsTrigger": false,
+              "Scale": "50,50,50",
+              "Static": true,
+              "Surface": null
+            }
+          ]
+        },
+        {
+          "Id": "3b1190f6-224a-4168-b00f-02278ddd1f69",
+          "Name": "Cube",
+          "Position": "0,248.5564,384",
+          "Scale": "1,1,15",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "ModelRenderer",
+              "__enabled": false,
+              "BodyGroups": 18446744073709551615,
+              "MaterialGroup": null,
+              "MaterialOverride": null,
+              "Model": "models/dev/box.vmdl",
+              "RenderType": "On",
+              "Tint": "1,1,1,1"
+            },
+            {
+              "__type": "BoxCollider",
+              "__enabled": true,
+              "Center": "0,0,0",
+              "IsTrigger": false,
+              "Scale": "50,50,50",
+              "Static": true,
+              "Surface": null
+            }
+          ]
+        },
+        {
+          "Id": "b21eab3a-fafa-44ec-b02b-6ca45e703f35",
+          "Name": "Cube",
+          "Position": "0,-248.4503,384",
+          "Scale": "1,1,15",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "ModelRenderer",
+              "__enabled": false,
+              "BodyGroups": 18446744073709551615,
+              "MaterialGroup": null,
+              "MaterialOverride": null,
+              "Model": "models/dev/box.vmdl",
+              "RenderType": "On",
+              "Tint": "1,1,1,1"
+            },
+            {
+              "__type": "BoxCollider",
+              "__enabled": true,
+              "Center": "0,0,0",
+              "IsTrigger": false,
+              "Scale": "50,50,50",
+              "Static": true,
+              "Surface": null
+            }
+          ]
+        },
+        {
+          "Id": "62da9fec-162a-4714-8d80-9ced99907b7b",
+          "Name": "Board Renderer",
+          "Rotation": "0.5000002,-0.5000001,-0.5000002,0.4999994",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "ModelRenderer",
+              "__enabled": true,
+              "BodyGroups": 18446744073709551615,
+              "MaterialGroup": null,
+              "MaterialOverride": "dev/helper/reflectivity_90b.vmat",
+              "Model": "models/board.vmdl",
+              "RenderType": "On",
+              "Tint": "0.25586,0.43069,0.25935,1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "SceneProperties": {
+    "FixedUpdateFrequency": 50,
+    "Lerping": true,
+    "MaxFixedUpdates": 5,
+    "NetworkFrequency": 30,
+    "ThreadedAnimation": true,
+    "TimeScale": 1,
+    "UseFixedUpdate": true
+  },
+  "Title": "game",
+  "Description": "",
+  "__references": []
+}
