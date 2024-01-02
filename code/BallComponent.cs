@@ -5,10 +5,11 @@ public sealed class BallComponent : Component, Component.ICollisionListener
 {
 	static BallComponent instance;
 
+	public CykaManager Manager;
 	[Property] public int Size { get; set; } = 1;
 	[Property] public List<string> Emojis { get; set; } = new();
 
-	float colliderSize = 0;
+	float colliderSize = 10f;
 	float fontScale = 0f;
 	SphereCollider collider;
 	TextRenderer textRenderer;
@@ -37,6 +38,11 @@ public sealed class BallComponent : Component, Component.ICollisionListener
 		textRenderer.Scale = fontScale;
 	}
 
+	protected override void OnDestroy()
+	{
+		Manager.RemoveBall( GameObject );
+	}
+
 	public void OnCollisionStart( Collision collision )
 	{
 		var other = collision.Other.GameObject.Components.Get<BallComponent>();
@@ -60,6 +66,7 @@ public sealed class BallComponent : Component, Component.ICollisionListener
 	public void Grow()
 	{
 		Size++;
+		Manager.AddScore( Size );
 		if ( textRenderer != null )
 			textRenderer.Text = GetEmoji();
 	}

@@ -3,6 +3,34 @@
 @inherits PanelComponent
 
 <root>
+	<div class="left">
+		<div class="score">
+			<div class="score">
+				<h1>Score:</h1>
+				<p>@($"{Manager.Score:n0}")</p>
+			</div>
+			<div class="highscore">
+				<h1>Highscore:</h1>
+				<p>@($"{Manager.HighScore:n0}")</p>
+			</div>
+		</div>
+		<div class="leaderboard">
+			<h1>LEADERBOARD</h1>
+			<div class="entries">
+				@foreach(var entry in Manager.Leaderboard.Entries)
+				{
+					<div class="entry @IsMe(entry)">
+						<div class="rank">@entry.Rank</div>
+						<div class="name">
+							<image texture=@AvatarTexture(entry) />
+							<label>@entry.DisplayName</label>
+						</div>
+						<div class="value">@entry.FormattedValue</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
 	<div class="right">
 		<div class="up-next">
 			<p>Coming Up:</p>
@@ -13,15 +41,65 @@
 			<img src="/ui/circle-of-evolution.png" />
 		</div>
 	</div>
+	@if(DeathZone.TimeInZone > 1f)
+	{
+		float time = DeathZone.TimeInZone;
+		int x = System.Random.Shared.Int(-(int)time,(int)time);
+		int y = System.Random.Shared.Int(-(int)time,(int)time);
+		<div class="death-bar">
+			<div class="container" style="left: @(x)px; top: @(y)px;">
+				<div class="bar">
+					<div class="inner">
+						<div class="fill" style="width: @(((time - 1f) / (DeathZone.DeathTime - 1f)) * 100)%"></div>
+					</div>
+				</div>
+				<p>WATCH OUT</p>
+			</div>
+		</div>
+	}
+
+	@if(!Manager.Playing)
+	{
+		<div class="game-over">
+			<div class="content">
+				<h1>GAME OVER</h1>
+				<div class="content">
+					<div class="left">
+						<h2>Largest Emoji:</h2>
+						<p class="emoji">@(BallComponent.GetEmoji(Manager.Evolution))</p>
+					</div>
+					<div class="right">
+						<div class="entry">
+							<h2>Score:</h2>
+							<p>@($"{Manager.Score:n0}")</p>
+						</div>
+						<div class="entry">
+							<h2>Highscore:</h2>
+							<p>@($"{Manager.HighScore:n0}")</p>
+						</div>
+					</div>
+				</div>
+				<h2>Press Space to play again!</h2>
+			</div>
+		</div>
+	}
 </root>
 
 @code
 {
 	[Property] CykaManager Manager { get; set; }
 	[Property] Dropper Dropper { get; set; }
+	[Property] DeathZone DeathZone { get; set; }
 
-	/// <summary>
-	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
-	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine( Dropper.UpNext );
+	string IsMe(Sandbox.Services.Leaderboards.Entry entry)
+    {
+        return entry.Me ? "me" : "";
+    }
+
+	string AvatarTexture(Sandbox.Services.Leaderboards.Entry entry)
+    {
+        return $"avatar:{entry.SteamId}";
+    }
+
+	protected override int BuildHash() => System.HashCode.Combine( Dropper.UpNext, Manager.Score, Manager.HighScore, DeathZone.TimeInZone );
 }

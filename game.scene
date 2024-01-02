@@ -74,6 +74,7 @@
           "__enabled": true,
           "BallPrefab": "prefabs/ball.prefab",
           "LerpSpeed": 10,
+          "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3",
           "Range": 188,
           "Speed": 250
         }
@@ -134,8 +135,8 @@
         {
           "Id": "3b1190f6-224a-4168-b00f-02278ddd1f69",
           "Name": "Cube",
-          "Position": "0,248.5564,384",
-          "Scale": "1,1,15",
+          "Position": "0,248.5564,565.0262",
+          "Scale": "1,1,23.29409",
           "Enabled": true,
           "Components": [
             {
@@ -162,8 +163,8 @@
         {
           "Id": "b21eab3a-fafa-44ec-b02b-6ca45e703f35",
           "Name": "Cube",
-          "Position": "0,-248.4503,384",
-          "Scale": "1,1,15",
+          "Position": "0,-248.4503,565.0262",
+          "Scale": "1,1,23.29409",
           "Enabled": true,
           "Components": [
             {
@@ -224,6 +225,7 @@
         {
           "__type": "CykaHud",
           "__enabled": true,
+          "DeathZone": "e2c849c2-12a5-44d2-b1c4-499546b0a8d8",
           "Dropper": "6cd3aaa5-9f58-4487-b297-5f9fbdec3ba5",
           "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3"
         }
@@ -231,23 +233,24 @@
     },
     {
       "Id": "e2c849c2-12a5-44d2-b1c4-499546b0a8d8",
-      "Name": "Death Zone",
-      "Position": "0,0,764.365",
-      "Scale": "1,10.15911,2.101981",
+      "Name": "Death Line",
+      "Position": "0,0,713.43",
       "Enabled": true,
       "Components": [
         {
-          "__type": "BoxCollider",
+          "__type": "DeathZone",
           "__enabled": true,
-          "Center": "0,0,0",
-          "IsTrigger": true,
-          "Scale": "50,50,50",
-          "Static": false,
-          "Surface": null
+          "DeathTime": 6,
+          "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3"
         },
         {
-          "__type": "DeathZone",
-          "__enabled": true
+          "__type": "TextRenderer",
+          "__enabled": true,
+          "Color": "1,1,1,1",
+          "FontFamily": "Poppins",
+          "FontSize": 32,
+          "Scale": 1,
+          "Text": "\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB\uD83D\uDEAB"
         }
       ]
     }

@@ -3,6 +3,7 @@ using Sandbox;
 
 public sealed class Dropper : Component
 {
+	[Property] CykaManager Manager { get; set; }
 	[Property] GameObject BallPrefab { get; set; }
 	[Property] float Speed { get; set; } = 1f;
 	[Property] float LerpSpeed { get; set; } = 10f;
@@ -15,6 +16,8 @@ public sealed class Dropper : Component
 
 	protected override void OnUpdate()
 	{
+		if ( !Manager.Playing ) return;
+
 		if ( Input.Down( "Left" ) )
 		{
 			hspeed = hspeed.LerpTo( Speed, Time.Delta * LerpSpeed );
@@ -49,8 +52,11 @@ public sealed class Dropper : Component
 		var ball = obj.Components.Get<BallComponent>();
 		if ( ball is not null )
 		{
+			ball.Manager = Manager;
 			ball.Size = UpNext;
 		}
+		Manager.AddScore( UpNext );
+		Manager.AddBall( obj );
 		UpNext = Random.Shared.Int( 1, 5 );
 		timeSinceLastDrop = 0;
 	}

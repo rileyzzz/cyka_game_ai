@@ -1,8 +1,9 @@
 {
   "RootObject": {
-    "Id": "01a5cee8-b620-40f7-b474-64911c3b98b4",
+    "Id": "267f7448-46f5-43b9-a035-5d77209a5787",
     "Name": "ball",
     "Scale": "0.5,0.5,0.5",
+    "Tags": "ball",
     "Enabled": true,
     "Components": [
       {
@@ -48,7 +49,7 @@
     ],
     "Children": [
       {
-        "Id": "d94739a5-67a8-4c5b-a278-d65be043f710",
+        "Id": "93c7bb3a-0f74-495c-bf41-94fa373af440",
         "Name": "Visual",
         "Position": "0,0,2.532715",
         "Enabled": true,
