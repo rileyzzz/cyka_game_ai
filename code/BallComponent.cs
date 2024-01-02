@@ -3,6 +3,8 @@ using Sandbox;
 
 public sealed class BallComponent : Component, Component.ICollisionListener
 {
+	static BallComponent instance;
+
 	[Property] public int Size { get; set; } = 1;
 	[Property] public List<string> Emojis { get; set; } = new();
 
@@ -10,6 +12,12 @@ public sealed class BallComponent : Component, Component.ICollisionListener
 	float fontScale = 0f;
 	SphereCollider collider;
 	TextRenderer textRenderer;
+
+	protected override void OnAwake()
+	{
+		instance = this;
+	}
+
 	protected override void OnStart()
 	{
 		collider = Components.Get<SphereCollider>( FindMode.EverythingInSelfAndChildren );
@@ -63,6 +71,17 @@ public sealed class BallComponent : Component, Component.ICollisionListener
 			return "❓";
 
 		return Emojis[size];
+	}
+
+	public static string GetEmoji( int size )
+	{
+		if ( instance is null ) return "❓";
+
+		size -= 1;
+		if ( size >= instance.Emojis.Count || size < 0 || instance.Emojis.Count == 0 )
+			return "❓";
+
+		return instance.Emojis[size];
 	}
 
 	public float GetFontScale()

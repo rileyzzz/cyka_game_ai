@@ -1,7 +1,7 @@
 {
   "Title": "Cyka Game",
   "Type": "game",
-  "Org": "local",
+  "Org": "carsonk",
   "Ident": "cyka_game",
   "Tags": null,
   "Schema": 1,
@@ -26,7 +26,8 @@
     "PerMapRanking": false,
     "LeaderboardType": "None",
     "CsProjName": "",
-    "StartupScene": "scenes/minimal.scene",
-    "ProjectTemplate": null
+    "StartupScene": "game.scene",
+    "ProjectTemplate": null,
+    "LaunchMode": "Normal"
   }
 }

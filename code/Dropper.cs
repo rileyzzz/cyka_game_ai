@@ -8,6 +8,8 @@ public sealed class Dropper : Component
 	[Property] float LerpSpeed { get; set; } = 10f;
 	[Property] float Range { get; set; } = 100f;
 
+	public int UpNext = 1;
+
 	float hspeed = 0f;
 	TimeSince timeSinceLastDrop = 0f;
 
@@ -43,7 +45,13 @@ public sealed class Dropper : Component
 		if ( timeSinceLastDrop < 0.25f )
 			return;
 
-		SceneUtility.Instantiate( BallPrefab, Transform.Position + Vector3.Zero.WithY( Random.Shared.Float( -1f, 1f ) ) );
+		var obj = SceneUtility.Instantiate( BallPrefab, Transform.Position + Vector3.Zero.WithY( Random.Shared.Float( -1f, 1f ) ) );
+		var ball = obj.Components.Get<BallComponent>();
+		if ( ball is not null )
+		{
+			ball.Size = UpNext;
+		}
+		UpNext = Random.Shared.Int( 1, 5 );
 		timeSinceLastDrop = 0;
 	}
 }

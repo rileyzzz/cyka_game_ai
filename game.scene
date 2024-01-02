@@ -1,6 +1,18 @@
 {
   "GameObjects": [
     {
+      "Id": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3",
+      "Name": "GameManager",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "CykaManager",
+          "__enabled": true,
+          "LeaderboardName": "highscores"
+        }
+      ]
+    },
+    {
       "Id": "579135df-f88d-48ba-a85e-a40ed0a7bae5",
       "Name": "Main Camera",
       "Position": "-834.6442,0.0003030993,374.7838",
@@ -192,6 +204,50 @@
               "Tint": "0.25586,0.43069,0.25935,1"
             }
           ]
+        }
+      ]
+    },
+    {
+      "Id": "5e8d546a-7a26-4008-b27b-1b4fc78e22a6",
+      "Name": "Game UI",
+      "Position": "-108.0703,16.86917,715.1371",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "ScreenPanel",
+          "__enabled": true,
+          "AutoScreenScale": true,
+          "Opacity": 1,
+          "Scale": 1,
+          "ZIndex": 100
+        },
+        {
+          "__type": "CykaHud",
+          "__enabled": true,
+          "Dropper": "6cd3aaa5-9f58-4487-b297-5f9fbdec3ba5",
+          "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3"
+        }
+      ]
+    },
+    {
+      "Id": "e2c849c2-12a5-44d2-b1c4-499546b0a8d8",
+      "Name": "Death Zone",
+      "Position": "0,0,764.365",
+      "Scale": "1,10.15911,2.101981",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "BoxCollider",
+          "__enabled": true,
+          "Center": "0,0,0",
+          "IsTrigger": true,
+          "Scale": "50,50,50",
+          "Static": false,
+          "Surface": null
+        },
+        {
+          "__type": "DeathZone",
+          "__enabled": true
         }
       ]
     }

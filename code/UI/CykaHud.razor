@@ -1,0 +1,27 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root>
+	<div class="right">
+		<div class="up-next">
+			<p>Coming Up:</p>
+			<div class="emoji @("emoji-" + Dropper.UpNext)">@BallComponent.GetEmoji(Dropper.UpNext)</div>
+		</div>
+		<div class="circle">
+			<p>Cyka of Evolution</p>
+			<img src="/ui/circle-of-evolution.png" />
+		</div>
+	</div>
+</root>
+
+@code
+{
+	[Property] CykaManager Manager { get; set; }
+	[Property] Dropper Dropper { get; set; }
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( Dropper.UpNext );
+}
