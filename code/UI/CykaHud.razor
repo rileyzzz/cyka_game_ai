@@ -15,20 +15,23 @@
 			</div>
 		</div>
 		<div class="leaderboard">
-			<h1>LEADERBOARD</h1>
-			<div class="entries">
-				@foreach(var entry in Manager.Leaderboard.Entries)
-				{
-					<div class="entry @IsMe(entry)">
-						<div class="rank">@entry.Rank</div>
-						<div class="name">
-							<image texture=@AvatarTexture(entry) />
-							<label>@entry.DisplayName</label>
+			@if(Manager.Leaderboard is not null)
+			{
+				<h1>LEADERBOARD</h1>
+				<div class="entries">
+					@foreach(var entry in Manager.Leaderboard.Entries)
+					{
+						<div class="entry @IsMe(entry)">
+							<div class="rank">@entry.Rank</div>
+							<div class="name">
+								<image texture=@AvatarTexture(entry) />
+								<label>@entry.DisplayName</label>
+							</div>
+							<div class="value">@entry.FormattedValue</div>
 						</div>
-						<div class="value">@entry.FormattedValue</div>
-					</div>
-				}
-			</div>
+					}
+				</div>
+			}
 		</div>
 	</div>
 	<div class="right">

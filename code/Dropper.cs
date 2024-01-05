@@ -14,11 +14,22 @@ public sealed class Dropper : Component
 	float hspeed = 0f;
 	TimeSince timeSinceLastDrop = 0f;
 
+	TimeSince timeSinceLastMouseMove = 0f;
+
 	protected override void OnUpdate()
 	{
 		if ( !Manager.Playing ) return;
 
-		if ( Input.Down( "Left" ) )
+		if ( Input.AnalogLook.yaw != 0f )
+		{
+			timeSinceLastMouseMove = 0f;
+		}
+
+		if ( timeSinceLastMouseMove < 0.5f )
+		{
+			hspeed = hspeed.LerpTo( Input.AnalogLook.yaw * Speed * 10f, Time.Delta * LerpSpeed * 5f );
+		}
+		else if ( Input.Down( "Left" ) )
 		{
 			hspeed = hspeed.LerpTo( Speed, Time.Delta * LerpSpeed );
 		}
@@ -37,7 +48,7 @@ public sealed class Dropper : Component
 		Transform.Position = Transform.Position.WithY( y );
 
 
-		if ( Input.Pressed( "Jump" ) )
+		if ( Input.Pressed( "Jump" ) || Input.Pressed( "attack1" ) )
 		{
 			Drop();
 		}
