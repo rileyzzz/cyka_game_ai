@@ -26,8 +26,9 @@
     "PerMapRanking": false,
     "LeaderboardType": "None",
     "CsProjName": "",
-    "StartupScene": "game.scene",
+    "StartupScene": "ai_sim.scene",
     "ProjectTemplate": null,
-    "LaunchMode": "Normal"
+    "LaunchMode": "Normal",
+    "MapStartupScene": null
   }
 }

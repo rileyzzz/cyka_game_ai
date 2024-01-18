@@ -1,0 +1,36 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root>
+    <div class="grid">
+        @foreach (var obj in Manager.Scenes)
+        {
+            var scene = obj.Components.Get<NEATScene>();
+            <NEATScenePanel class="item" @Scene=@scene/>
+        }
+    </div>
+
+    <div class="gamestats">
+        <div class="inner">
+            <div>Genome: <span></span></div>
+            <div>Best:</div>
+        </div>
+
+    </div>
+</root>
+
+@code
+{
+    [Property] NEATManager Manager { get; set; }
+
+    public int Generation => Manager?.Generation ?? 0;
+
+    protected override int BuildHash()
+    {
+        if (Manager == null)
+            return 0;
+
+        return Manager.Scenes.Count.GetHashCode();
+    }
+}

@@ -1,0 +1,96 @@
+{
+  "Id": "7e6d7229-9b70-42e7-a2f5-9338e1d81047",
+  "GameObjects": [
+    {
+      "Id": "f5a61914-00cd-437c-b4e6-609d0f5108b7",
+      "Name": "Main Camera",
+      "Position": "-629.2598,0.0003030993,0",
+      "Enabled": true,
+      "Components": [
+        {
+          "__version": 0,
+          "__type": "CameraComponent",
+          "__enabled": true,
+          "BackgroundColor": "0.15842,0.15842,0.15842,1",
+          "ClearFlags": "All",
+          "FieldOfView": 57.82,
+          "IsMainCamera": true,
+          "Orthographic": true,
+          "OrthographicHeight": 1000,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        }
+      ]
+    },
+    {
+      "Id": "a8511d52-bc19-4557-b856-ea3a434ccc60",
+      "Name": "AIManager",
+      "Enabled": true,
+      "Components": [
+        {
+          "__version": 0,
+          "__type": "NEATManager",
+          "__enabled": true,
+          "SceneTemplate": "prefabs/neatscene.prefab"
+        }
+      ]
+    },
+    {
+      "Id": "dec89e9a-05f3-46d5-848f-01f744b68d94",
+      "Name": "Gallery",
+      "Position": "-1854.854,-732.7798,443.6725",
+      "Enabled": true,
+      "Components": [
+        {
+          "__version": 0,
+          "__type": "ScreenPanel",
+          "__enabled": true,
+          "AutoScreenScale": true,
+          "Opacity": 1,
+          "Scale": 1,
+          "ZIndex": 100
+        },
+        {
+          "__version": 0,
+          "__type": "GenomeGallery",
+          "__enabled": true,
+          "Manager": "a8511d52-bc19-4557-b856-ea3a434ccc60"
+        }
+      ]
+    },
+    {
+      "Id": "b17b349a-d269-46a9-9ac4-34876240fa2c",
+      "Name": "Directional Light",
+      "Position": "0,0,200",
+      "Rotation": "0.1173451,0.55624,-0.04231617,0.8216059",
+      "Enabled": true,
+      "Components": [
+        {
+          "__version": 0,
+          "__type": "DirectionalLight",
+          "__enabled": true,
+          "LightColor": "0.91373,0.98039,1,1",
+          "Shadows": true,
+          "SkyColor": "0.05882,0.07451,0.08235,1"
+        }
+      ]
+    }
+  ],
+  "SceneProperties": {
+    "FixedUpdateFrequency": 50,
+    "Lerping": true,
+    "MaxFixedUpdates": 5,
+    "NetworkFrequency": 30,
+    "ThreadedAnimation": true,
+    "TimeScale": 1,
+    "UseFixedUpdate": true
+  },
+  "Title": "ai_sim",
+  "Description": "",
+  "__references": []
+}

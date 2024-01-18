@@ -19,7 +19,6 @@ public class AIPlayer : Component
 
 	private void GatherInputs()
 	{
-		var balls = Scene.GetAllComponents<BallComponent>();
 
 	}
 }

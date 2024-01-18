@@ -82,13 +82,11 @@ public sealed class NeuralNetCyclicSafe : IBlackBox<double>
         _postActivationArr = new double[nodeCount];
 
 		// Map the input and output vectors to the corresponding segments of _postActivationArr.
-		Inputs = new double[_inputCount];
-		Array.Copy( _postActivationArr, 0, Inputs, 0, _inputCount );
+		Inputs = new ArrayRef<double>( _postActivationArr, 0, _inputCount );
 
 		// Note. Output neurons follow input neurons in the arrays.
-		Outputs = new double[_outputCount];
-		Array.Copy( _postActivationArr, _inputCount, Outputs, 0, _inputCount );
-    }
+		Outputs = new ArrayRef<double>( _postActivationArr, _inputCount, _outputCount );
+	}
 
     #endregion
 
@@ -97,12 +95,12 @@ public sealed class NeuralNetCyclicSafe : IBlackBox<double>
     /// <summary>
     /// Gets a memory segment that represents a vector of input values.
     /// </summary>
-    public double[] Inputs { get; }
+    public ArrayRef<double> Inputs { get; }
 
     /// <summary>
     /// Gets a memory segment that represents a vector of output values.
     /// </summary>
-    public double[] Outputs { get; }
+    public ArrayRef<double> Outputs { get; }
 
     /// <summary>
     /// Activate the network for a fixed number of iterations defined by the 'maxIterations' parameter
@@ -140,8 +138,8 @@ public sealed class NeuralNetCyclicSafe : IBlackBox<double>
             // Pass the pre-activation levels through the activation function, storing the results in the
             // post-activation span/array.
             _activationFn(
-                preActivationsNonInputs.Slice( nonInputCount),
-                postActivationsNonInputs.Slice( nonInputCount ));
+                preActivationsNonInputs.Slice( 0, nonInputCount ),
+                postActivationsNonInputs.Slice( 0, nonInputCount ));
 
             // Reset the elements of _preActivationArray that represent the output and hidden nodes.
             preActivationsNonInputs.Clear();

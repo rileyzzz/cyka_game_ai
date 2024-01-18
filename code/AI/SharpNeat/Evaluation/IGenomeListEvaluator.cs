@@ -1,5 +1,7 @@
 ﻿// This file is part of SharpNEAT; Copyright Colin D. Green.
 // See LICENSE.txt for details.
+using System.Threading.Tasks;
+
 namespace SharpNeat.Evaluation;
 
 /// <summary>
@@ -31,7 +33,7 @@ public interface IGenomeListEvaluator<TGenome>
     /// Evaluates a list of genomes, assigning fitness info to each.
     /// </summary>
     /// <param name="genomeList">The list of genomes to evaluate.</param>
-    void Evaluate(IList<TGenome> genomeList);
+    Task Evaluate(IList<TGenome> genomeList);
 
     /// <summary>
     /// Accepts a <see cref="FitnessInfo"/>, which is intended to be from the fittest genome in the population, and returns a boolean

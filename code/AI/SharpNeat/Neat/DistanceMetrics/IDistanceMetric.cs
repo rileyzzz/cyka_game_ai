@@ -46,5 +46,6 @@ public interface IDistanceMetric<T>
     ///
     /// A centroid is used in k-means clustering to define the centre of a cluster.
     /// </remarks>
-    ConnectionGenes<T> CalculateCentroid(ReadOnlySpan<ConnectionGenes<T>> points);
+    //ConnectionGenes<T> CalculateCentroid(ReadOnlySpan<ConnectionGenes<T>> points);
+    ConnectionGenes<T> CalculateCentroid(List<ConnectionGenes<T>> points);
 }

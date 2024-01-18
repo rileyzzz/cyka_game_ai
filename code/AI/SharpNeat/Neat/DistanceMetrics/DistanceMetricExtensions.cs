@@ -27,12 +27,12 @@ public static class DistanceMetricExtensions
     ///
     /// A centroid is used in k-means clustering to define the centre of a cluster.
     /// </remarks>
-    public static ConnectionGenes<T> CalculateCentroid<T>(
-        this IDistanceMetric<T> distanceMetric,
-        List<ConnectionGenes<T>> points)
-        where T : struct
-    {
-        return distanceMetric.CalculateCentroid(
-            points);
-    }
+    //public static ConnectionGenes<T> CalculateCentroid<T>(
+    //    this IDistanceMetric<T> distanceMetric,
+    //    List<ConnectionGenes<T>> points)
+    //    where T : struct
+    //{
+    //    return distanceMetric.CalculateCentroid(
+    //        points);
+    //}
 }

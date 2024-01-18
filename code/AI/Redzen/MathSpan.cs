@@ -348,39 +348,56 @@ public static class MathSpan
 	public static T Sum<T>(ReadOnlySpan<T> s)
         //where T : struct, INumber<T>
     {
-        //T sum = T.Zero;
-        T sum = (T)(object)0;
+		//T sum = T.Zero;
 
-        // Run the vectorised code only if hardware acceleration is available, and there are enough span
-        // elements to justify its use.
-        //if(Vector.IsHardwareAccelerated && Vector<T>.IsSupported && (s.Length >= Vector<T>.Count << 1))
-        //{
-        //    var sumVec = new Vector<T>(s);
-        //    s = s.Slice(Vector<T>.Count);
+		// Run the vectorised code only if hardware acceleration is available, and there are enough span
+		// elements to justify its use.
+		//if(Vector.IsHardwareAccelerated && Vector<T>.IsSupported && (s.Length >= Vector<T>.Count << 1))
+		//{
+		//    var sumVec = new Vector<T>(s);
+		//    s = s.Slice(Vector<T>.Count);
 
-        //    // Loop over vector sized slices.
-        //    do
-        //    {
-        //        var vec = new Vector<T>(s);
-        //        sumVec += vec;
-        //        s = s.Slice(Vector<T>.Count);
-        //    }
-        //    while(s.Length >= Vector<T>.Count);
+		//    // Loop over vector sized slices.
+		//    do
+		//    {
+		//        var vec = new Vector<T>(s);
+		//        sumVec += vec;
+		//        s = s.Slice(Vector<T>.Count);
+		//    }
+		//    while(s.Length >= Vector<T>.Count);
 
-        //    // Sum the elements of sumVec.
-        //    sum = Vector.Sum(sumVec);
-        //}
+		//    // Sum the elements of sumVec.
+		//    sum = Vector.Sum(sumVec);
+		//}
 
-        // Note. If the above vectorized code executed then this handles remaining elements,
-        // otherwise it handles all elements.
-        for(int i = 0; i < s.Length; i++)
+		// Note. If the above vectorized code executed then this handles remaining elements,
+		// otherwise it handles all elements.
+		if (typeof(T) == typeof(int))
 		{
-			//sum += s[i];
-			// Garry moment
-			sum = (T)(object)((int)(object)sum + (int)(object)s[i]);
-		}
+			T sum = (T)(object)0;
 
-        return sum;
+			for ( int i = 0; i < s.Length; i++ )
+			{
+				//sum += s[i];
+				// Garry moment
+				sum = (T)(object)((int)(object)sum + (int)(object)s[i]);
+			}
+
+			return sum;
+		}
+		else
+		{
+			T sum = (T)(object)0.0;
+
+			for ( int i = 0; i < s.Length; i++ )
+			{
+				//sum += s[i];
+				// Garry moment
+				sum = (T)(object)((double)(object)sum + (double)(object)s[i]);
+			}
+
+			return sum;
+		}
     }
 
     ///// <summary>

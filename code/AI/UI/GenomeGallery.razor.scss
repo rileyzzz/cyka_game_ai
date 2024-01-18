@@ -1,0 +1,43 @@
+GenomeGallery {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .grid {
+        margin: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        /*max-width: 60%;*/
+        width: 80%;
+        overflow: scroll;
+
+        .item {
+            width: 256px;
+            height: 256px;
+            margin: 4px;
+            pointer-events: all;
+        }
+    }
+
+    .gamestats {
+        position: absolute;
+        right: 8px;
+        height: 100%;
+        justify-content: center;
+
+        flex-direction: column;
+        font-family: Poppins;
+        font-size: 24px;
+        color: white;
+        text-shadow: 0 0 8px black;
+
+        .inner {
+            flex-direction: column;
+            border-radius: 8px;
+            background-color: #111111a3;
+            padding: 16px;
+        }
+    }
+}

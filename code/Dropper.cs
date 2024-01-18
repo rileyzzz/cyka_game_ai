@@ -14,12 +14,14 @@ public sealed class Dropper : Component
 	float hspeed = 0f;
 	TimeSince timeSinceLastDrop = 0f;
 
+
 	TimeSince timeSinceLastMouseMove = 0f;
 
 	protected override void OnUpdate()
 	{
 		if ( !Manager.Playing ) return;
 
+		/*
 		if ( Input.AnalogLook.yaw != 0f )
 		{
 			timeSinceLastMouseMove = 0f;
@@ -52,12 +54,32 @@ public sealed class Dropper : Component
 		{
 			Drop();
 		}
+		*/
 	}
 
-	void Drop()
+	public void SetDropPos(float y)
+	{
+		if ( !Manager.Playing ) return;
+		y = (y * 2.0f - 1.0f) * Range;
+		//y = Math.Clamp( y, -1, 1 ) * Range;
+		y = Math.Clamp( y, -Range, Range );
+		Transform.Position = Transform.Position.WithY( y );
+	}
+
+	public GameObject AIDrop(float y)
+	{
+		if ( !Manager.Playing ) return null;
+
+		// denormalize from [0, 1] to [-Range, Range]
+
+		SetDropPos( y );
+		return Drop();
+	}
+
+	GameObject Drop()
 	{
 		if ( timeSinceLastDrop < 0.25f )
-			return;
+			return null;
 
 		var obj = SceneUtility.Instantiate( BallPrefab, Transform.Position + Vector3.Zero.WithY( Random.Shared.Float( -1f, 1f ) ) );
 		var ball = obj.Components.Get<BallComponent>();
@@ -70,5 +92,7 @@ public sealed class Dropper : Component
 		Manager.AddBall( obj );
 		UpNext = Random.Shared.Int( 1, 5 );
 		timeSinceLastDrop = 0;
+
+		return obj;
 	}
 }

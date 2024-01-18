@@ -18,12 +18,12 @@ public interface IBlackBox<T> : IDisposable
     /// <summary>
     /// Gets a memory segment that represents a vector of input values.
     /// </summary>
-    T[] Inputs { get; }
+    ArrayRef<T> Inputs { get; }
 
 	/// <summary>
 	/// Gets a memory segment that represents a vector of output values.
 	/// </summary>
-	T[] Outputs { get; }
+	ArrayRef<T> Outputs { get; }
 
     /// <summary>
     /// Activate the black box. This causes the black box to accept its inputs and produce output signals

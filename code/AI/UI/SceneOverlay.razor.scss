@@ -1,0 +1,29 @@
+SceneOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-family: Zyzol;
+    font-size: 16px;
+    color: white;
+    text-shadow: 0 0 8px black;
+    flex-direction: column-reverse;
+
+    transition: all 0.2s linear;
+    border-radius: 8px;
+
+    .stats {
+        /*left: auto;*/
+        width: 100%;
+        /*text-align: right;*/
+        align-items: center;
+        flex-direction: column;
+    }
+}
+
+.leader {
+    border: 2px solid gold;
+    margin: -4px;
+    box-shadow: 0px 0px 12px #b17d2a;
+}

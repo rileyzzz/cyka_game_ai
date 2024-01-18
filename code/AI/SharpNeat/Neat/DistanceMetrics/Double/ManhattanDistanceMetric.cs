@@ -290,7 +290,8 @@ public sealed class ManhattanDistanceMetric : IDistanceMetric<double>
     // Note. In practice this is possibly a near optimal centroid for all but small clusters.
     /// <inheritdoc/>
     public ConnectionGenes<double> CalculateCentroid(
-        ReadOnlySpan<ConnectionGenes<double>> points)
+        //ReadOnlySpan<ConnectionGenes<double>> points)
+        List<ConnectionGenes<double>> points)
     {
         return DistanceMetricUtils.CalculateEuclideanCentroid(points);
     }

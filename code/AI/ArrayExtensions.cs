@@ -2,6 +2,26 @@ using System;
 using System.Linq;
 using Sandbox;
 
+public struct ArrayRef<T>
+{
+	public T[] Arr { get; set; }
+	int Start;
+	int Length;
+
+	public ArrayRef( T[] arr, int start, int length )
+	{
+		Arr = arr;
+		Start = start;
+		Length = length;
+	}
+
+	public static implicit operator ArrayRef<T>( T[] arr )
+	{
+		return new ArrayRef<T>( arr, 0, arr.Length );
+	}
+
+	public Span<T> AsSpan() { return new Span<T>( Arr, Start, Length ); }
+}
 
 public static class ArrayExtensions
 {

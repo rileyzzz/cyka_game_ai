@@ -1,5 +1,7 @@
 ﻿// This file is part of SharpNEAT; Copyright Colin D. Green.
 // See LICENSE.txt for details.
+using System.Threading.Tasks;
+
 namespace SharpNeat.Evaluation;
 
 /// <summary>
@@ -13,5 +15,5 @@ public interface IPhenomeEvaluator<TPhenome>
     /// </summary>
     /// <param name="phenome">The phenome to evaluate.</param>
     /// <returns>An instance of <see cref="FitnessInfo"/> that conveys the phenome's fitness scores/data.</returns>
-    FitnessInfo Evaluate(TPhenome phenome);
+    Task<FitnessInfo> Evaluate(TPhenome phenome);
 }

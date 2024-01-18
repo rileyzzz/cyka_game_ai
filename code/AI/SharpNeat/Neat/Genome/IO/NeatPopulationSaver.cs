@@ -39,7 +39,7 @@ public static class NeatPopulationSaver
         ArgumentNullException.ThrowIfNull(name);
 
         // Check if the specified parent folder exists.
-        if(!Sandbox.FileSystem.Data.DirectoryExists( parentPath))
+        if(!Sandbox.FileSystem.Data.DirectoryExists( parentPath ))
             throw new IOException($"parentPath does not exist [{parentPath}]");
 
         // Check if the specified population folder name exists.

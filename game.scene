@@ -1,4 +1,5 @@
 {
+  "Id": "78978fc7-d657-48bc-85a8-22457247525e",
   "GameObjects": [
     {
       "Id": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3",
@@ -6,6 +7,7 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "CykaManager",
           "__enabled": true,
           "LeaderboardName": "highscores"
@@ -19,6 +21,7 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "CameraComponent",
           "__enabled": true,
           "BackgroundColor": "0.15842,0.15842,0.15842,1",
@@ -45,6 +48,7 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "DirectionalLight",
           "__enabled": true,
           "LightColor": "0.91373,0.98039,1,1",
@@ -60,6 +64,7 @@
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "ModelRenderer",
           "__enabled": false,
           "BodyGroups": 18446744073709551615,
@@ -70,6 +75,7 @@
           "Tint": "1,1,1,1"
         },
         {
+          "__version": 0,
           "__type": "Dropper",
           "__enabled": true,
           "BallPrefab": "prefabs/ball.prefab",
@@ -87,6 +93,7 @@
           "Enabled": true,
           "Components": [
             {
+              "__version": 0,
               "__type": "TextRenderer",
               "__enabled": true,
               "Color": "1,1,1,1",
@@ -112,6 +119,7 @@
           "Enabled": true,
           "Components": [
             {
+              "__version": 0,
               "__type": "ModelRenderer",
               "__enabled": false,
               "BodyGroups": 18446744073709551615,
@@ -122,6 +130,7 @@
               "Tint": "1,1,1,1"
             },
             {
+              "__version": 0,
               "__type": "BoxCollider",
               "__enabled": true,
               "Center": "0,0,0",
@@ -140,6 +149,7 @@
           "Enabled": true,
           "Components": [
             {
+              "__version": 0,
               "__type": "ModelRenderer",
               "__enabled": false,
               "BodyGroups": 18446744073709551615,
@@ -150,6 +160,7 @@
               "Tint": "1,1,1,1"
             },
             {
+              "__version": 0,
               "__type": "BoxCollider",
               "__enabled": true,
               "Center": "0,0,0",
@@ -168,6 +179,7 @@
           "Enabled": true,
           "Components": [
             {
+              "__version": 0,
               "__type": "ModelRenderer",
               "__enabled": false,
               "BodyGroups": 18446744073709551615,
@@ -178,6 +190,7 @@
               "Tint": "1,1,1,1"
             },
             {
+              "__version": 0,
               "__type": "BoxCollider",
               "__enabled": true,
               "Center": "0,0,0",
@@ -195,6 +208,7 @@
           "Enabled": true,
           "Components": [
             {
+              "__version": 0,
               "__type": "ModelRenderer",
               "__enabled": true,
               "BodyGroups": 18446744073709551615,
@@ -209,41 +223,20 @@
       ]
     },
     {
-      "Id": "5e8d546a-7a26-4008-b27b-1b4fc78e22a6",
-      "Name": "Game UI",
-      "Position": "-108.0703,16.86917,715.1371",
-      "Enabled": true,
-      "Components": [
-        {
-          "__type": "ScreenPanel",
-          "__enabled": true,
-          "AutoScreenScale": true,
-          "Opacity": 1,
-          "Scale": 1,
-          "ZIndex": 100
-        },
-        {
-          "__type": "CykaHud",
-          "__enabled": true,
-          "DeathZone": "e2c849c2-12a5-44d2-b1c4-499546b0a8d8",
-          "Dropper": "6cd3aaa5-9f58-4487-b297-5f9fbdec3ba5",
-          "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3"
-        }
-      ]
-    },
-    {
       "Id": "e2c849c2-12a5-44d2-b1c4-499546b0a8d8",
       "Name": "Death Line",
       "Position": "0,0,713.43",
       "Enabled": true,
       "Components": [
         {
+          "__version": 0,
           "__type": "DeathZone",
           "__enabled": true,
           "DeathTime": 6,
           "Manager": "75e37f26-9af4-4e82-a4df-d93a9ec5edc3"
         },
         {
+          "__version": 0,
           "__type": "TextRenderer",
           "__enabled": true,
           "Color": "1,1,1,1",

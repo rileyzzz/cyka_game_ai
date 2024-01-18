@@ -1,0 +1,18 @@
+{
+  "RootObject": {
+    "Id": "8cd9d91e-1568-4274-b76d-3aebfb01c23e",
+    "Name": "neatscene",
+    "Enabled": true,
+    "Components": [
+      {
+        "__version": 0,
+        "__type": "NEATScene",
+        "__enabled": true
+      }
+    ]
+  },
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "__references": []
+}

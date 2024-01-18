@@ -5,7 +5,7 @@ using SharpNeat.Evaluation;
 
 public class CykaEvaluationScheme : IBlackBoxEvaluationScheme<double>
 {
-	NEATModel Model;
+	NEATManager Manager;
 
 	/// <inheritdoc/>
 	public int InputCount => CykaInputState.NumInputs;
@@ -25,20 +25,22 @@ public class CykaEvaluationScheme : IBlackBoxEvaluationScheme<double>
 	/// <inheritdoc/>
 	public bool EvaluatorsHaveState => true;
 
-	public CykaEvaluationScheme( NEATModel model )
+	public CykaEvaluationScheme(NEATManager manager)
 	{
-		Model = model;
+		Manager = manager;
 	}
 
 	/// <inheritdoc/>
 	public IPhenomeEvaluator<IBlackBox<double>> CreateEvaluator()
 	{
-		return new CykaBlackBoxEvaluator( Model );
+		return new CykaBlackBoxEvaluator( Manager );
 	}
 
 	/// <inheritdoc/>
 	public bool TestForStopCondition( FitnessInfo fitnessInfo )
 	{
-		return (fitnessInfo.PrimaryFitness >= 100.0);
+		// Stop immediately.
+		return true;
+		// return (fitnessInfo.PrimaryFitness >= 100.0);
 	}
 }

@@ -1,5 +1,7 @@
 ﻿// This file is part of SharpNEAT; Copyright Colin D. Green.
 // See LICENSE.txt for details.
+using System.Threading.Tasks;
+
 namespace SharpNeat.EvolutionAlgorithm;
 
 /// <summary>
@@ -15,10 +17,10 @@ public interface IEvolutionAlgorithm
     /// <summary>
     /// Initialise the evolutionary algorithm.
     /// </summary>
-    void Initialise();
+    Task Initialise();
 
     /// <summary>
     /// Perform one generation of the evolutionary algorithm.
     /// </summary>
-    void PerformOneGeneration();
+    Task PerformOneGeneration();
 }

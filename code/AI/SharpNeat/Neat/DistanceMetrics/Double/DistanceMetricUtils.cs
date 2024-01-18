@@ -22,14 +22,15 @@ public static class DistanceMetricUtils
     /// In Euclidean space the centroid is obtained by calculating the componentwise mean over the set of points.
     /// </remarks>
     public static ConnectionGenes<double> CalculateEuclideanCentroid(
-        ReadOnlySpan<ConnectionGenes<double>> points)
+        //ReadOnlySpan<ConnectionGenes<double>> points)
+        List<ConnectionGenes<double>> points)
     {
         // Special case. One item in list, therefore it is the centroid.
-        if(points.Length == 1)
+        if(points.Count == 1)
             return points[0];
 
         // This scenario isn't intended to occur; see https://github.com/colgreen/sharpneat-refactor/issues/5
-        if(points.Length == 0)
+        if(points.Count == 0)
             return new ConnectionGenes<double>(0);
 
         // ENHANCEMENT: Obtain dictionary from a pool to avoid allocation and initialisation cost on each call to this method.
@@ -62,7 +63,7 @@ public static class DistanceMetricUtils
         }
 
         // Create and return the centroid.
-        return CreateCentroid(coordElemTotals, points.Length);
+        return CreateCentroid( coordElemTotals, points.Count );
     }
 
     private static ConnectionGenes<double> CreateCentroid(

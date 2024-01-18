@@ -1,0 +1,55 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Diagnostics;
+
+@inherits Panel
+@attribute [StyleSheet]
+
+<root class="@LeaderClass()">
+    <div class="stats">
+        <span class="score">Score: @GetScore()</span>
+    </div>
+    
+</root>
+
+@code
+{
+    protected NEATScene GetScene()
+    {
+        if (Parent is NEATScenePanel panel)
+            return panel.Scene;
+
+        Assert.True(false);
+        return null;
+    }
+
+
+    protected int GetScore()
+    {
+        var scene = GetScene();
+        if (scene == null)
+            return -1;
+
+        return (int)scene.GetFitnessScore();
+    }
+
+    protected bool IsLeader
+    {
+        get
+        {
+            var scene = GetScene();
+            return scene?.IsLeader() ?? false;
+        }
+    }
+
+    protected string LeaderClass()
+    {
+        return IsLeader ? "leader" : "";
+    }
+
+    protected override int BuildHash()
+    {
+
+        return HashCode.Combine(GetScore(), IsLeader);
+    }
+}

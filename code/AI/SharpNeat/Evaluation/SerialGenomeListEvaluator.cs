@@ -1,5 +1,7 @@
 ﻿// This file is part of SharpNEAT; Copyright Colin D. Green.
 // See LICENSE.txt for details.
+using System.Threading.Tasks;
+
 namespace SharpNeat.Evaluation;
 
 /// <summary>
@@ -66,8 +68,28 @@ public class SerialGenomeListEvaluator<TGenome,TPhenome> : IGenomeListEvaluator<
     /// Evaluates a list of genomes, assigning fitness info to each.
     /// </summary>
     /// <param name="genomeList">The list of genomes to evaluate.</param>
-    public void Evaluate(IList<TGenome> genomeList)
+    public async Task Evaluate(IList<TGenome> genomeList)
     {
+		List<(TGenome, Task<FitnessInfo>)> tasks = new();
+		foreach ( TGenome genome in genomeList )
+		{
+			using TPhenome phenome = _genomeDecoder.Decode( genome );
+			if ( phenome is null )
+			{   // Non-viable genome.
+				genome.FitnessInfo = _phenomeEvaluationScheme.NullFitness;
+			}
+			else
+			{
+				tasks.Add( ( genome, _phenomeEvaluator.Evaluate( phenome ) ) );
+			}
+		}
+
+		foreach (var (genome, task) in tasks )
+		{
+			genome.FitnessInfo = await task;
+		}
+
+		/*
         // Decode and evaluate each genome in turn.
         foreach(TGenome genome in genomeList)
         {
@@ -82,7 +104,9 @@ public class SerialGenomeListEvaluator<TGenome,TPhenome> : IGenomeListEvaluator<
                 genome.FitnessInfo = _phenomeEvaluator.Evaluate(phenome);
             }
         }
-    }
+		*/
+
+	}
 
     /// <summary>
     /// Accepts a <see cref="FitnessInfo"/>, which is intended to be from the fittest genome in the population, and returns a boolean

@@ -13,15 +13,15 @@ public sealed class CykaManager : Component
 
 	protected override void OnStart()
 	{
-		StartGame();
+		// StartGame();
 	}
 
 	protected override void OnUpdate()
 	{
-		if ( !Playing && Input.Pressed( "Jump" ) )
-		{
-			StartGame();
-		}
+		//if ( !Playing && Input.Pressed( "Jump" ) )
+		//{
+		//	StartGame();
+		//}
 	}
 
 	public void StartGame()
@@ -45,7 +45,7 @@ public sealed class CykaManager : Component
 		if ( !Playing ) return;
 
 		Playing = false;
-		Sandbox.Services.Stats.SetValue( "highscore", Score );
+		// Sandbox.Services.Stats.SetValue( "highscore", Score );
 	}
 
 	public void AddBall( GameObject ball )

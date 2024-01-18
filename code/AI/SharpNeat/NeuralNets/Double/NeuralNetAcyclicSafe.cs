@@ -85,17 +85,16 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
         // Create working array for node activation signals.
         _activationArr = new double[digraph.TotalNodeCount];
 
-        // Map the inputs vector to the corresponding segment of node activation values.
-		Inputs = new double[_inputCount];
-		Array.Copy( _activationArr, 0, Inputs, 0, _inputCount );
+		// Map the inputs vector to the corresponding segment of node activation values.
+		Inputs = new ArrayRef<double>( _activationArr, 0, _inputCount );
 
 		// Get an array to act a as a contiguous run of output signals.
 		_outputArr = new double[_outputCount];
-        Outputs = _outputArr;
+		Outputs = _outputArr;
 
-        // Store the indexes into _activationArr that give the output signals.
-        _outputNodeIdxArr = digraph.OutputNodeIdxArr;
-    }
+		// Store the indexes into _activationArr that give the output signals.
+		_outputNodeIdxArr = digraph.OutputNodeIdxArr;
+	}
 
     #endregion
 
@@ -104,12 +103,12 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
     /// <summary>
     /// Gets a memory segment that represents a vector of input values.
     /// </summary>
-    public double[] Inputs { get; }
+    public ArrayRef<double> Inputs { get; }
 
     /// <summary>
     /// Gets a memory segment that represents a vector of output values.
     /// </summary>
-    public double[] Outputs { get; }
+    public ArrayRef<double> Outputs { get; }
 
     /// <summary>
     /// Activate the network. Activation reads input signals from InputSignalArray and writes output signals
