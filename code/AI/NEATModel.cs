@@ -13,6 +13,8 @@ using SharpNeat.Neat.Genome.Double;
 using SharpNeat.Neat;
 using SharpNeat.Neat.Genome.IO;
 using Sandbox.Razor;
+using SharpNeat.Neat.EvolutionAlgorithm;
+
 public class NEATScenePanel : ScenePanel
 {
 	private NEATScene _Scene;
@@ -48,6 +50,45 @@ public class NEATScenePanel : ScenePanel
 		base.BuildRenderTree( tree );
 	}
 
+	private float hoverAlpha = 0.0f;
+	private float hoverSpeed = 0.0f;
+	public void DrawInputOverlay( ref RenderState state )
+	{
+		var inputs = Scene.DebugInputs;
+		var outputs = Scene.DebugOutputs;
+		if ( inputs == null || outputs == null )
+			return;
+
+		bool hasHover = this.HasHovered;
+
+		hoverAlpha = MathX.SmoothDamp( hoverAlpha, hasHover ? 1 : 0, ref hoverSpeed, 0.1f, Time.Delta );
+
+		if (hoverAlpha > 0.01f)
+		{
+			Color col = new Color( 1, 1, 1, hoverAlpha );
+
+			Graphics.DrawText( this.Box.Rect.TopLeft + new Vector2( -32.0f, 16.0f ), $"Next: {inputs[1].ToString( "0.00" )}", col );
+			Graphics.DrawText( this.Box.Rect.TopLeft + new Vector2( -32.0f, 32.0f ), $"Time: {inputs[2].ToString( "0.00" )}", col );
+
+			for ( int i = 3; i < inputs.Length; i += 3 )
+			{
+				double size = inputs[i + 0] * 0.5f + 0.5f;
+				double x = inputs[i + 1] * 0.5f + 0.5f;
+				double y = inputs[i + 2] * 0.5f + 0.5f;
+
+				// fit over UI.
+				x = MathX.Lerp( (float)(1 - x), 0.5f, 0.55f );
+				y = MathX.Lerp( (float)(1 - y), 0.5f, 0.3f );
+
+				var pos = this.Box.Rect.TopLeft + this.Box.Rect.Size * new Vector2( (float)x, (float)y );
+				float drawSize = ((float)size * 11) * 8;
+
+				var rect = new Rect( pos - (drawSize * 0.5f) * Vector2.One, drawSize * Vector2.One );
+				Graphics.DrawRoundedRectangle( rect, col, Vector4.One * drawSize * 0.5f );
+			}
+		}
+	}
+
 	public override void DrawContent( ref RenderState state )
 	{
 		base.DrawContent( ref state );
@@ -64,6 +105,10 @@ public class NEATScene : Component
 
 	private TimeSince TimeSinceLastDrop;
 
+	public double[] DebugInputs { get; private set; }
+	public double[] DebugOutputs { get; private set; }
+
+	public bool IsSimulating { get; private set; } = false;
 	private GameObject LastBall;
 	public NEATScene()
 	{
@@ -91,14 +136,16 @@ public class NEATScene : Component
 
 	//}
 
-	public void Start()
+	private void Start()
 	{
 		var manager = Scene.GetAllComponents<CykaManager>().FirstOrDefault();
 		manager.StartGame();
 
-
 		var dropper = Scene.GetAllComponents<Dropper>().FirstOrDefault();
 		dropper.UpNext = 1;
+
+		var deathzone = Scene.GetAllComponents<DeathZone>().FirstOrDefault();
+		deathzone.TimeInZone = 0;
 
 		LastBall = null;
 		TimeSinceLastDrop = 0;
@@ -111,7 +158,7 @@ public class NEATScene : Component
 		float dt = Time.Delta;
 		float now = Time.Now;
 
-		if ( !CanRun() )
+		if ( !IsSimulating )
 			return;
 
 		lock ( sceneLock )
@@ -128,11 +175,15 @@ public class NEATScene : Component
 
 	public void SetDebugInputState( Span<double> inputs )
 	{
+		DebugInputs = inputs.ToArray();
+
 		// Log.Info( $"in {inputs[0]} {inputs[1]}" );
 	}
 
 	public void SetDebugOutputState( Span<double> outputs )
 	{
+		DebugOutputs = outputs.ToArray();
+
 		// Log.Info($"cond {outputs[0]} {outputs[1]}");
 	}
 
@@ -180,9 +231,18 @@ public class NEATScene : Component
 	//	await NEATScene.WaitForBallToSettle( ball );
 	//}
 
+	public void BeginSimulation( NEATManager manager )
+	{
+		Manager = manager;
+		IsSimulating = true;
+
+		Start();
+	}
+
 	public void EndSimulation()
 	{
 		// Gray out the window.
+		IsSimulating = false;
 	}
 
 	protected override void OnDestroy()
@@ -212,7 +272,7 @@ public class NEATScene : Component
 		}
 
 		// AI has died, hasn't dropped a ball in a while.
-		if ( TimeSinceLastDrop > 1.0f )
+		if ( TimeSinceLastDrop > 3.0f )
 			return false;
 
 		return true;
@@ -225,7 +285,7 @@ public class NEATScene : Component
 		var manager = Scene.GetAllComponents<CykaManager>().FirstOrDefault();
 		var dropper = Scene.GetAllComponents<Dropper>().FirstOrDefault();
 
-		state.NextSize = dropper.UpNext;
+		state.NextSize = (dropper.UpNext / 11.0f) * 2.0f - 1.0f;
 		state.TimeSinceLastDrop = TimeSinceLastDrop;
 
 		var deathzone = Scene.GetAllComponents<DeathZone>().FirstOrDefault();
@@ -247,15 +307,24 @@ public class NEATScene : Component
 		{
 			ref CykaBall data = ref state.Balls[i];
 
-			float ypos = balls[i].Transform.Position.z / deathZ * 0.95f;
+			//float ypos = balls[i].Transform.Position.z / deathZ * 0.95f;
+			float ypos = balls[i].Transform.Position.z / deathZ * 2.0f - 1;
+			ypos *= 0.95f;
 			float xpos = balls[i].Transform.Position.y / boardHalfWidth;
-
+			
 			// Normalize inputs.
-			xpos = Math.Clamp( xpos * 0.5f + 0.5f, 0.0f, 1.0f );
-			ypos = Math.Clamp( ypos, 0.0f, 1.0f );
+			xpos = Math.Clamp( xpos, -1.0f, 1.0f );
+			ypos = Math.Clamp( ypos, -1.0f, 1.0f );
 
 			data.Pos = new Vector2( xpos, ypos );
-			data.Size = balls[i].Size / 11.0f;
+			data.Size = (balls[i].Size / 11.0f) * 2.0f - 1.0f;
+		}
+
+		for ( int i = nBalls; i < CykaInputState.NumTrackedBalls; i++ )
+		{
+			ref CykaBall data = ref state.Balls[i];
+			data.Pos = new Vector3(0, -1);
+			data.Size = -1;
 		}
 	}
 
@@ -302,8 +371,12 @@ public class NEATManager : Component
 	private ExperimentConfig Config;
 
 	private EvolutionAlgorithmStatistics CurStats = null;
+	private PopulationStatistics CurPopStats = null;
 
 	public int Generation => CurStats?.Generation ?? 0;
+
+	public double BestFitness => CurPopStats?.BestFitness.PrimaryFitness ?? default;
+	public double MeanFitness => CurPopStats?.MeanFitness ?? default;
 
 	protected override void OnAwake()
 	{
@@ -340,7 +413,7 @@ public class NEATManager : Component
 
 		var component = Scenes[NumActiveScenes++].Components.Get<NEATScene>();
 		Assert.NotNull( component );
-		component.Manager = this;
+		component.BeginSimulation( this );
 		return component;
 	}
 
@@ -367,7 +440,7 @@ public class NEATManager : Component
 		foreach ( var obj in Scenes )
 		{
 			var component = obj.Components.Get<NEATScene>();
-			if ( component != null && component.CanRun() )
+			if ( component != null && component.IsSimulating )
 				SceneLeaderboard.Add( component );
 		}
 
@@ -411,40 +484,72 @@ public class NEATManager : Component
 		experiment.Configure( Config );
 
 		// Create a NeatEvolutionAlgorithm instance ready to run the experiment.
-		var ea = NeatUtils.CreateNeatEvolutionAlgorithm( experiment );
+		NeatEvolutionAlgorithm<double> ea = null;
+		// var ea = NeatUtils.CreateNeatEvolutionAlgorithm( experiment );
+
+		//Generation = 0;
+
+		const bool loadedFromFile = false;
+		if (loadedFromFile)
+		{
+			// Create a MetaNeatGenome.
+			var metaNeatGenome = NeatUtils.CreateMetaNeatGenome( experiment );
+
+			NeatPopulationLoader<double> loader = new( metaNeatGenome );
+			string populationFolderPath = Path.Combine( "model", "gen199" );
+			List<NeatGenome<double>> genomeList = loader.LoadFromFolder( populationFolderPath );
+
+			INeatGenomeBuilder<double> genomeBuilder = NeatGenomeBuilderFactory<double>.Create( metaNeatGenome );
+
+			var pop = new NeatPopulation<double>(
+				metaNeatGenome,
+				genomeBuilder,
+				experiment.PopulationSize,
+				genomeList );
+
+			ea = NeatUtils.CreateNeatEvolutionAlgorithm( experiment, pop );
+		}
+		else
+		{
+			ea = NeatUtils.CreateNeatEvolutionAlgorithm( experiment );
+		}
+
 		await ea.Initialise();
 
 		CurStats = ea.Stats;
 
 		var neatPop = ea.Population;
-
-		//Generation = 0;
+		CurPopStats = neatPop.Stats;
 
 		// Begin running.
 		while ( true )
 		{
 			ResetScenes();
 
-			foreach ( var scene in Scenes )
-				scene.Components.Get<NEATScene>().Start();
+			//foreach ( var scene in Scenes )
+			//	scene.Components.Get<NEATScene>().Start();
 
 			Log.Info( $"Begin generation {ea.Stats.Generation}" );
 			await ea.PerformOneGeneration();
 			Log.Info( $"{ea.Stats.Generation} {neatPop.Stats.BestFitness.PrimaryFitness} {neatPop.Stats.MeanComplexity} {ea.ComplexityRegulationMode} {neatPop.Stats.MeanFitness}" );
 
-			Log.Info("Saving...");
-			string dir = $"model";
-			string file = $"gen{ea.Stats.Generation}";
+			if ( !loadedFromFile )
+			{
+				Log.Info("Saving...");
+				string dir = $"model";
+				string file = $"gen{ea.Stats.Generation}";
 
-			// Make sure parent dir exists.
-			FileSystem.Data.CreateDirectory( dir );
+				// Make sure parent dir exists.
+				FileSystem.Data.CreateDirectory( dir );
 
-			// Clear the previous model.
-			string fullDir = Path.Combine( dir, file );
-			if ( FileSystem.Data.DirectoryExists( fullDir ) )
-				FileSystem.Data.DeleteDirectory( fullDir, true );
+				// Clear the previous model.
+				string fullDir = Path.Combine( dir, file );
+				if ( FileSystem.Data.DirectoryExists( fullDir ) )
+					FileSystem.Data.DeleteDirectory( fullDir, true );
 
-			NeatPopulationSaver.SaveToFolder<double>( neatPop.GenomeList, dir, file );
+				NeatPopulationSaver.SaveToFolder<double>( neatPop.GenomeList, dir, file );
+			}
+			
 			await GameTask.DelaySeconds( 1.0f );
 		}
 	}

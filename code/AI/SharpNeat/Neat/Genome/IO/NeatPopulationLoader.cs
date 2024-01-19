@@ -42,16 +42,19 @@ public sealed class NeatPopulationLoader<T>
         // Alloc genome list with an appropriate capacity.
         List<NeatGenome<T>> genomeList = new(/*fileInfoArr.Length*/);
 
-        // Loop the genome files, loading each in turn.
-        //foreach(FileInfo fileInfo in fileInfoArr)
-        foreach(var fileInfo in Sandbox.FileSystem.Data.FindDirectory( $"{path}.*.net" ) )
+		// Loop the genome files, loading each in turn.
+		//foreach(FileInfo fileInfo in fileInfoArr)
+		int nFound = 0;
+        foreach(var file in Sandbox.FileSystem.Data.FindFile( path, "*.net" ) )
         {
             NeatGenome<T> genome = NeatGenomeLoader.Load(
-                fileInfo, _metaNeatGenome, _genomeId++);
+                Path.Combine(path, file), _metaNeatGenome, _genomeId++);
 
             genomeList.Add(genome);
+			nFound++;
         }
 
+		Log.Info($"Loaded {nFound} genomes from {path}.");
         return genomeList;
     }
 

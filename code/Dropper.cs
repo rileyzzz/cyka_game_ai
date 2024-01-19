@@ -61,6 +61,7 @@ public sealed class Dropper : Component
 	{
 		if ( !Manager.Playing ) return;
 		y = (y * 2.0f - 1.0f) * Range;
+		// y = y * Range;
 		//y = Math.Clamp( y, -1, 1 ) * Range;
 		y = Math.Clamp( y, -Range, Range );
 		Transform.Position = Transform.Position.WithY( y );

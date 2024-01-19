@@ -23,7 +23,7 @@ public struct CykaInputState
 	public const int NumTrackedBalls = 18;
 	public const int NumInputs = NumBasicInputs + (CykaBall.NumProps * NumTrackedBalls);
 
-	public int NextSize;
+	public float NextSize;
 	public float TimeSinceLastDrop;
 	public CykaBall[] Balls = new CykaBall[NumTrackedBalls];
 
@@ -106,7 +106,7 @@ public class CykaBlackBoxEvaluator : IPhenomeEvaluator<IBlackBox<double>>
 			// Log.Info($"ball {ball}");
 			// await NEATScene.WaitForBallToSettle( ball );
 			// Log.Info("ran scene!");
-			await GameTask.DelaySeconds( 0.1f );
+			await GameTask.DelaySeconds( 0.05f );
 		}
 
 		Log.Info( "simulation ended." );

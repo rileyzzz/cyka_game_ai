@@ -14,6 +14,13 @@
 
 @code
 {
+    public override bool HasContent => true;
+
+    public SceneOverlay()
+    {
+        // this.HasContent = true;
+    }
+
     protected NEATScene GetScene()
     {
         if (Parent is NEATScenePanel panel)
@@ -45,6 +52,15 @@
     protected string LeaderClass()
     {
         return IsLeader ? "leader" : "";
+    }
+
+    public override void DrawContent(ref RenderState state)
+    {
+        base.DrawContent(ref state);
+
+        if (Parent is NEATScenePanel panel)
+            panel.DrawInputOverlay(ref state);
+        // Gizmo.Draw.Text("lol", Transform.Zero);
     }
 
     protected override int BuildHash()

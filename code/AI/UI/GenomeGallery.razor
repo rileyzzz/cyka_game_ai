@@ -13,8 +13,9 @@
 
     <div class="gamestats">
         <div class="inner">
-            <div>Genome: <span></span></div>
-            <div>Best:</div>
+            <div>Generation:<span>@Generation</span></div>
+            <div>Best Fitness:<span>@((int)BestFitness)</span></div>
+            <div>Mean Fitness:<span>@((int)MeanFitness)</span></div>
         </div>
 
     </div>
@@ -26,11 +27,15 @@
 
     public int Generation => Manager?.Generation ?? 0;
 
+    public double BestFitness => Manager?.BestFitness ?? 0;
+    public double MeanFitness => Manager?.MeanFitness ?? 0;
+
+    // public int BestScore
     protected override int BuildHash()
     {
         if (Manager == null)
             return 0;
 
-        return Manager.Scenes.Count.GetHashCode();
+        return HashCode.Combine( Manager.Scenes.Count, Generation );
     }
 }
