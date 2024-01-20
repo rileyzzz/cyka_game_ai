@@ -1,6 +1,6 @@
 {
   "name": "Cyka",
-  "isAcyclic": false,
+  "isAcyclic": true,
   "cyclesPerActivation": 1,
   "activationFnName": "LeakyReLU",
   "populationSize": 30,

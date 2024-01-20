@@ -488,7 +488,7 @@ public class NEATManager : Component
 		// and assign some default settings (these can be overridden by config).
 		var experiment = new NeatExperiment<double>( evalScheme, "cyka" )
 		{
-			IsAcyclic = false,
+			IsAcyclic = true,
 			CyclesPerActivation = 1,
 			ActivationFnName = ActivationFunctionId.LeakyReLU.ToString()
 		};

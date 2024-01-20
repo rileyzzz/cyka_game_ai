@@ -2,6 +2,7 @@
 // See LICENSE.txt for details.
 using System.Buffers;
 using System.Diagnostics;
+using Sandbox;
 using SharpNeat.Graphs.Acyclic;
 
 namespace SharpNeat.NeuralNets.Double;
@@ -183,12 +184,18 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
 
 	void IGraphDraw.DrawGraph( Sandbox.Rect rect, Color color )
 	{
-		Log.Info("draw graph");
-
-		/*
 		ReadOnlySpan<int> srcIds = _connIds.GetSourceIdSpan();
 		ReadOnlySpan<int> tgtIds = _connIds.GetTargetIdSpan();
 		ReadOnlySpan<double> weights = _weightArr.AsSpan();
+
+		// Scale up the rectangle.
+		//const float scale = 1.2f;
+		//var extents = rect.Size * 0.5f;
+		//var center = rect.Center;
+		//rect.Left = center.x - extents.x * scale;
+		//rect.Right = center.x + extents.x * scale;
+		//rect.Top = center.y - extents.y * scale;
+		//rect.Bottom = center.y + extents.y * scale;
 
 		int iNode;
 		int conIdx = 0;
@@ -198,58 +205,76 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
 		var nodeCon = new List<(int, int, double)>();
 
 
-		float numDrawLayers = _layerInfoArr.Length;
+		float numDrawLayers = _layerInfoArr.Length - 1;
 
 		// Setup input positions.
 		float draw_x = rect.Left;
 		for ( iNode = 0; iNode < _inputCount; iNode++ )
 		{
-			float draw_y = rect.Top + rect.Size.y * ((float)iNode / _inputCount);
-			nodePos[nodeIdx + iNode] = new Vector2( draw_x, draw_y );
+			float draw_y = rect.Top + rect.Size.y * ((iNode + 0.5f) / _inputCount);
+			nodePos[iNode] = new Vector2( draw_x, draw_y );
 		}
 
 		// Loop through network layers.
-		for ( int layerIdx = 0; layerIdx < _layerInfoArr.Length; layerIdx++ )
+		for ( int layerIdx = 0; layerIdx < _layerInfoArr.Length - 1; layerIdx++ )
 		{
 			draw_x += rect.Size.x / numDrawLayers;
 
-			LayerInfo layerInfo = _layerInfoArr[layerIdx];
+			LayerInfo layerInfo = _layerInfoArr[layerIdx + 1];
 
 			// Push signals through the current layer's connections to the target nodes (that are all in 'downstream' layers).
-			
+
 			int numNodes = layerInfo.EndNodeIdx - nodeIdx;
 			for (iNode = 0; iNode < numNodes; iNode++ )
 			{
-				float draw_y = rect.Top + rect.Size.y * ((float)iNode / numNodes);
+				float draw_y = rect.Top + rect.Size.y * ((iNode + 0.5f) / numNodes);
 				nodePos[nodeIdx + iNode] = new Vector2(draw_x, draw_y);
 			}
 
-			if (layerIdx != _layerInfoArr.Length - 1 )
+			for ( ; conIdx < layerInfo.EndConnectionIdx; conIdx++ )
 			{
-				for ( ; conIdx < layerInfo.EndConnectionIdx; conIdx++ )
-				{
-					// Get the connection source signal, multiply it by the connection weight, add the result
-					// to the target node's current pre-activation level, and store the result.
-					nodeCon.Add( (srcIds[conIdx], tgtIds[conIdx], weights[conIdx]) );
-				}
-
-				layerInfo = _layerInfoArr[layerIdx + 1];
-
-				// Update nodeIdx to point at first node in the next layer.
-				nodeIdx = layerInfo.EndNodeIdx;
+				// Get the connection source signal, multiply it by the connection weight, add the result
+				// to the target node's current pre-activation level, and store the result.
+				nodeCon.Add( (srcIds[conIdx], tgtIds[conIdx], weights[conIdx]) );
 			}
+
+
+			// Update nodeIdx to point at first node in the next layer.
+			nodeIdx = layerInfo.EndNodeIdx;
 		}
 
 		// Draw the links.
+		Graphics.Attributes.Set( "LayerMat", Matrix.Identity );
+		Graphics.Attributes.Set( "Texture", Texture.White );
+		Graphics.Attributes.SetCombo( "D_BLENDMODE", BlendMode.Normal );
+
+		foreach ( var (src, dst, weight) in nodeCon )
+		{
+			var srcPos = nodePos[src];
+			var dstPos = nodePos[dst];
+
+			const float drawSize = 0.5f;
+
+			var baseCol = dst > src ? Color.Blue : Color.Orange;
+			var lineCol = baseCol * Math.Abs( (float)weight );
+			lineCol.a = 1.0f;
+
+			Vertex[] v = new Vertex[4];
+			v[0] = new Vertex( srcPos - Vector2.Up * drawSize, new Vector2( 0f, 0f ), color * lineCol );
+			v[1] = new Vertex( dstPos - Vector2.Up * drawSize, new Vector2( 1f, 0f ), color * lineCol );
+			v[2] = new Vertex( srcPos + Vector2.Up * drawSize, new Vector2( 0f, 1f ), color * lineCol );
+			v[3] = new Vertex( dstPos + Vector2.Up * drawSize, new Vector2( 1f, 1f ), color * lineCol );
+
+			Sandbox.Graphics.Draw( v, 4, Material.UI.Basic, null, Graphics.PrimitiveType.TriangleStrip );
+		}
 
 		// Now draw the nodes.
 		foreach ( var (nodeId, pos) in nodePos )
 		{
-			const float drawSize = 8.0f;
+			const float drawSize = 3f;
 			var nodeRect = new Sandbox.Rect( pos - (drawSize * 0.5f) * Vector2.One, drawSize * Vector2.One );
-			Sandbox.Graphics.DrawRoundedRectangle( nodeRect, color, Vector4.One * drawSize * 0.5f );
+			Sandbox.Graphics.DrawRoundedRectangle( nodeRect, color * Color.Green, Vector4.One * drawSize * 0.5f );
 		}
-		*/
 	}
 
 	#endregion
@@ -262,7 +287,7 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
         if(!_isDisposed)
         {
             _isDisposed = true;
-            ArrayPool<double>.Shared.Return(_activationArr);
+            //ArrayPool<double>.Shared.Return(_activationArr);
         }
     }
 

@@ -171,6 +171,14 @@ public sealed class NeuralNetCyclicSafe : IBlackBox<double>
 		var nodePos = new Dictionary<int, Vector2>();
 		var nodeCon = new List<(int, int, double)>();
 
+		// Scale up the rectangle.
+		//const float scale = 2.0f;
+		//var extents = rect.Size * 0.5f;
+		//var center = rect.Center;
+		//rect.Left = center.x - extents.x * scale;
+		//rect.Right = center.x + extents.x * scale;
+		//rect.Top = center.y - extents.y * scale;
+		//rect.Bottom = center.y + extents.y * scale;
 
 		// Setup input positions.
 		float draw_x = rect.Left;
@@ -195,14 +203,6 @@ public sealed class NeuralNetCyclicSafe : IBlackBox<double>
 		}
 
 
-		// Scale up the rectangle.
-		const float scale = 2.0f;
-		var extents = rect.Size * 0.5f;
-		var center = rect.Center;
-		rect.Left = center.x - extents.x * scale;
-		rect.Right = center.x + extents.x * scale;
-		rect.Top = center.y - extents.y * scale;
-		rect.Bottom = center.y + extents.y * scale;
 
 		// Draw the links.
 		Graphics.Attributes.Set( "LayerMat", Matrix.Identity );
