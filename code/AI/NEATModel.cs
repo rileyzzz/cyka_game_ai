@@ -139,6 +139,7 @@ public class NEATScene : Component
 	private void Start()
 	{
 		var manager = Scene.GetAllComponents<CykaManager>().FirstOrDefault();
+		manager.EndGame();
 		manager.StartGame();
 
 		var dropper = Scene.GetAllComponents<Dropper>().FirstOrDefault();
@@ -272,7 +273,7 @@ public class NEATScene : Component
 		}
 
 		// AI has died, hasn't dropped a ball in a while.
-		if ( TimeSinceLastDrop > 3.0f )
+		if ( TimeSinceLastDrop > 5.0f )
 			return false;
 
 		return true;

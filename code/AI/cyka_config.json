@@ -3,7 +3,7 @@
   "isAcyclic": false,
   "cyclesPerActivation": 1,
   "activationFnName": "LeakyReLU",
-  "populationSize": 24,
+  "populationSize": 40,
   "initialInterconnectionsProportion": 0.05,
   "connectionWeightScale": 5.0,
   "degreeOfParallelism": 1,
@@ -12,8 +12,8 @@
 
   "evolutionAlgorithm": {
     "speciesCount": 15,
-    "elitismProportion": 0.66,
-    "selectionProportion": 0.66,
+    "elitismProportion": 0.2,
+    "selectionProportion": 0.9,
     "offspringAsexualProportion": 0.5,
     "offspringRecombinationProportion": 0.5,
     "interspeciesMatingProportion": 0.01
@@ -31,12 +31,5 @@
     "strategyName": "relative",
     "relativeComplexityCeiling": 30,
     "minSimplifcationGenerations": 10
-  },
-  "customEvaluationSchemeConfig": {
-    "preyInitMoves": 4,
-    "preySpeed": 1.0,
-    "sensorRange": 4.0,
-    "maxTimesteps": 70,
-    "trialsPerEvaluation": 100
   }
 }

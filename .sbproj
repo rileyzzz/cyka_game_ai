@@ -1,8 +1,8 @@
 {
-  "Title": "Cyka Game",
+  "Title": "Cyka AI",
   "Type": "game",
-  "Org": "carsonk",
-  "Ident": "cyka_game",
+  "Org": "rileyzzz",
+  "Ident": "cyka_ai",
   "Tags": null,
   "Schema": 1,
   "HasAssets": true,
@@ -29,6 +29,7 @@
     "StartupScene": "ai_sim.scene",
     "ProjectTemplate": null,
     "LaunchMode": "Normal",
-    "MapStartupScene": null
+    "MapStartupScene": null,
+    "ParentPackage": ""
   }
 }
