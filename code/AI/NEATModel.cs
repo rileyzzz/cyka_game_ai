@@ -15,6 +15,11 @@ using SharpNeat.Neat.Genome.IO;
 using Sandbox.Razor;
 using SharpNeat.Neat.EvolutionAlgorithm;
 
+public interface IGraphDraw
+{
+	public void DrawGraph( Rect rect, Color color ) { }
+}
+
 public class NEATScenePanel : ScenePanel
 {
 	private NEATScene _Scene;
@@ -86,6 +91,11 @@ public class NEATScenePanel : ScenePanel
 				var rect = new Rect( pos - (drawSize * 0.5f) * Vector2.One, drawSize * Vector2.One );
 				Graphics.DrawRoundedRectangle( rect, col, Vector4.One * drawSize * 0.5f );
 			}
+
+			if ( Scene.Drawable != null )
+			{
+				Scene.Drawable.DrawGraph( this.Box.Rect, col );
+			}
 		}
 	}
 
@@ -101,6 +111,7 @@ public class NEATScene : Component
 {
 	// public static SceneFile DefaultScene = ResourceLibrary.Get<SceneFile>( "game.scene" );
 	public NEATManager Manager { get; set; }
+	public IGraphDraw Drawable { get; set; }
 	public new Scene Scene { get; private set; }
 
 	private TimeSince TimeSinceLastDrop;
@@ -232,9 +243,10 @@ public class NEATScene : Component
 	//	await NEATScene.WaitForBallToSettle( ball );
 	//}
 
-	public void BeginSimulation( NEATManager manager )
+	public void BeginSimulation( NEATManager manager, IGraphDraw drawable )
 	{
 		Manager = manager;
+		Drawable = drawable;
 		IsSimulating = true;
 
 		Start();
@@ -404,7 +416,7 @@ public class NEATManager : Component
 
 	int NumActiveScenes = 0;
 
-	public NEATScene AllocateScene()
+	public NEATScene AllocateScene( IGraphDraw draw )
 	{
 		if ( NumActiveScenes >= Scenes.Count )
 		{
@@ -414,7 +426,7 @@ public class NEATManager : Component
 
 		var component = Scenes[NumActiveScenes++].Components.Get<NEATScene>();
 		Assert.NotNull( component );
-		component.BeginSimulation( this );
+		component.BeginSimulation( this, draw );
 		return component;
 	}
 

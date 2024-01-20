@@ -3,7 +3,7 @@
   "isAcyclic": false,
   "cyclesPerActivation": 1,
   "activationFnName": "LeakyReLU",
-  "populationSize": 40,
+  "populationSize": 30,
   "initialInterconnectionsProportion": 0.05,
   "connectionWeightScale": 5.0,
   "degreeOfParallelism": 1,

@@ -181,12 +181,83 @@ public sealed class NeuralNetAcyclicSafe : IBlackBox<double>
         // Unnecessary for this implementation. The node activation signal state is completely overwritten on each activation.
     }
 
-    #endregion
+	void IGraphDraw.DrawGraph( Sandbox.Rect rect, Color color )
+	{
+		Log.Info("draw graph");
 
-    #region IDisposable
+		/*
+		ReadOnlySpan<int> srcIds = _connIds.GetSourceIdSpan();
+		ReadOnlySpan<int> tgtIds = _connIds.GetTargetIdSpan();
+		ReadOnlySpan<double> weights = _weightArr.AsSpan();
 
-    /// <inheritdoc/>
-    public void Dispose()
+		int iNode;
+		int conIdx = 0;
+		int nodeIdx = _inputCount;
+
+		var nodePos = new Dictionary<int, Vector2>();
+		var nodeCon = new List<(int, int, double)>();
+
+
+		float numDrawLayers = _layerInfoArr.Length;
+
+		// Setup input positions.
+		float draw_x = rect.Left;
+		for ( iNode = 0; iNode < _inputCount; iNode++ )
+		{
+			float draw_y = rect.Top + rect.Size.y * ((float)iNode / _inputCount);
+			nodePos[nodeIdx + iNode] = new Vector2( draw_x, draw_y );
+		}
+
+		// Loop through network layers.
+		for ( int layerIdx = 0; layerIdx < _layerInfoArr.Length; layerIdx++ )
+		{
+			draw_x += rect.Size.x / numDrawLayers;
+
+			LayerInfo layerInfo = _layerInfoArr[layerIdx];
+
+			// Push signals through the current layer's connections to the target nodes (that are all in 'downstream' layers).
+			
+			int numNodes = layerInfo.EndNodeIdx - nodeIdx;
+			for (iNode = 0; iNode < numNodes; iNode++ )
+			{
+				float draw_y = rect.Top + rect.Size.y * ((float)iNode / numNodes);
+				nodePos[nodeIdx + iNode] = new Vector2(draw_x, draw_y);
+			}
+
+			if (layerIdx != _layerInfoArr.Length - 1 )
+			{
+				for ( ; conIdx < layerInfo.EndConnectionIdx; conIdx++ )
+				{
+					// Get the connection source signal, multiply it by the connection weight, add the result
+					// to the target node's current pre-activation level, and store the result.
+					nodeCon.Add( (srcIds[conIdx], tgtIds[conIdx], weights[conIdx]) );
+				}
+
+				layerInfo = _layerInfoArr[layerIdx + 1];
+
+				// Update nodeIdx to point at first node in the next layer.
+				nodeIdx = layerInfo.EndNodeIdx;
+			}
+		}
+
+		// Draw the links.
+
+		// Now draw the nodes.
+		foreach ( var (nodeId, pos) in nodePos )
+		{
+			const float drawSize = 8.0f;
+			var nodeRect = new Sandbox.Rect( pos - (drawSize * 0.5f) * Vector2.One, drawSize * Vector2.One );
+			Sandbox.Graphics.DrawRoundedRectangle( nodeRect, color, Vector4.One * drawSize * 0.5f );
+		}
+		*/
+	}
+
+	#endregion
+
+	#region IDisposable
+
+	/// <inheritdoc/>
+	public void Dispose()
     {
         if(!_isDisposed)
         {

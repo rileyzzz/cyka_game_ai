@@ -12,8 +12,8 @@ namespace SharpNeat;
 /// system such as a C# program or a genetic programming tree.
 /// </summary>
 /// <typeparam name="T">Black box numeric data type.</typeparam>
-public interface IBlackBox<T> : IDisposable
-    where T : struct
+public interface IBlackBox<T> : IDisposable, IGraphDraw
+	where T : struct
 {
     /// <summary>
     /// Gets a memory segment that represents a vector of input values.
