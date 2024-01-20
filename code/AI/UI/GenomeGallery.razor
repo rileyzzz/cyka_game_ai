@@ -11,13 +11,38 @@
         }
     </div>
 
+    <div class="mainheader">
+        @if (IsTraining)
+        {
+            <div>Training Model</div>
+        }
+        else
+        {
+            <div>Running Model</div>
+        }
+    </div>
+
     <div class="gamestats">
         <div class="inner">
             <div>Generation:<span>@Generation</span></div>
+            <div>Batch:<span>@Batch</span></div>
             <div>Best Fitness:<span>@((int)BestFitness)</span></div>
             <div>Mean Fitness:<span>@((int)MeanFitness)</span></div>
         </div>
-
+        <div class="inner models">
+            <div class="model-header">Models</div>
+            <div class="model-list">
+                @foreach ( var model in GetModels() )
+                {
+                    <div class="model-item @IsSelected(model)" @onclick=@(() => SelectModel(model))>@model</div>
+                }
+            </div>
+            <div class="model-button" @onclick=@StateHasChanged>Refresh</div>
+            @if (SelectedModel != null && !ModelQueued)
+            {
+                <div class="model-button" @onclick=@LoadModel>Load</div>
+            }
+        </div>
     </div>
 </root>
 
@@ -25,10 +50,38 @@
 {
     [Property] NEATManager Manager { get; set; }
 
+    public bool ModelQueued => Manager?.ModelQueued ?? false;
+    public bool IsTraining => Manager?.IsTraining ?? false;
+
     public int Generation => Manager?.Generation ?? 0;
+    public int Batch => Manager?.CurBatchIndex ?? 0;
 
     public double BestFitness => Manager?.BestFitness ?? 0;
     public double MeanFitness => Manager?.MeanFitness ?? 0;
+
+    public string SelectedModel = null;
+
+    public IEnumerable<string> GetModels()
+    {
+        return Manager?.GetModels() ?? new string[0];
+    }
+
+    public string IsSelected(string model)
+    {
+        return SelectedModel == model ? "selected" : "";
+    }
+
+    public void SelectModel(string model)
+    {
+        Log.Info($"select model {model}");
+        SelectedModel = model;
+    }
+
+    public void LoadModel()
+    {
+        // Assert.NotNull(Manager);
+        Manager.LoadModel(SelectedModel);
+    }
 
     // public int BestScore
     protected override int BuildHash()
@@ -36,6 +89,6 @@
         if (Manager == null)
             return 0;
 
-        return HashCode.Combine( Manager.Scenes.Count, Generation );
+        return HashCode.Combine(IsTraining, ModelQueued, Manager.Scenes.Count, Generation, Batch, BestFitness, MeanFitness, SelectedModel);
     }
 }

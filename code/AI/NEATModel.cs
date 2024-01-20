@@ -59,6 +59,15 @@ public class NEATScenePanel : ScenePanel
 	private float hoverSpeed = 0.0f;
 	public void DrawInputOverlay( ref RenderState state )
 	{
+		// Gray it out if we're dead.
+		if (!Scene.IsSimulating)
+		{
+			Graphics.Attributes.Set( "LayerMat", Matrix.Identity );
+			Graphics.Attributes.Set( "Texture", Texture.White );
+			Graphics.Attributes.SetCombo( "D_BLENDMODE", BlendMode.Normal );
+			Graphics.DrawQuad( this.Box.Rect, Material.UI.Basic, new Color( 0.0f, 0.0f, 0.0f, 0.5f ) );
+		}
+
 		var inputs = Scene.DebugInputs;
 		var outputs = Scene.DebugOutputs;
 		if ( inputs == null || outputs == null )
@@ -120,6 +129,7 @@ public class NEATScene : Component
 	public double[] DebugOutputs { get; private set; }
 
 	public bool IsSimulating { get; private set; } = false;
+
 	private GameObject LastBall;
 	public NEATScene()
 	{
@@ -267,10 +277,13 @@ public class NEATScene : Component
 	private Vector3 LastBallPos;
 	public bool CanRun()
 	{
+		if ( Manager == null || !Manager.Running || Scene == null )
+			return false;
+
 		var manager = Scene.GetAllComponents<CykaManager>().FirstOrDefault();
 
 		// Game over.
-		if ( !manager.Playing )
+		if ( manager == null || !manager.Playing )
 			return false;
 
 		if ( LastBall != null && TimeSinceLastDrop < 5.0f )
@@ -391,6 +404,18 @@ public class NEATManager : Component
 	public double BestFitness => CurPopStats?.BestFitness.PrimaryFitness ?? default;
 	public double MeanFitness => CurPopStats?.MeanFitness ?? default;
 
+	public const int NumScenesPerBatch = 24;
+	private int NumScenes = 0;
+	public int CurBatchIndex { get; private set; } = 0;
+	private int NumScenesInBatch = 0;
+
+	public bool Running { get; set; } = false;
+	public bool IsTraining { get; private set; } = false;
+
+	private Task RunTask { get; set; }
+
+	// private SemaphoreSlim BatchSem = new( 0, NumScenesPerBatch );
+
 	protected override void OnAwake()
 	{
 		//Assert.True( Current == null );
@@ -403,48 +428,66 @@ public class NEATManager : Component
 		Log.Info( "NEAT manager loaded." );
 
 		LoadConfig();
-		_ = Train();
+		RunTask = RunModel(null);
 
 		// GameTask.RunInThreadAsync( () => Train() );
 	}
 
-	private bool Training = false;
 	protected override void OnUpdate()
 	{
 		UpdateSceneLeaderboard();
 	}
 
-	int NumActiveScenes = 0;
-
-	public NEATScene AllocateScene( IGraphDraw draw )
+	private NEATScene AllocateScene( IGraphDraw draw )
 	{
-		if ( NumActiveScenes >= Scenes.Count )
+		if ( NumScenesInBatch >= Scenes.Count )
 		{
 			var scene = SceneTemplate.Clone( global::Transform.Zero, this.GameObject );
 			Scenes.Add( scene );
 		}
 
-		var component = Scenes[NumActiveScenes++].Components.Get<NEATScene>();
+		var component = Scenes[NumScenesInBatch++].Components.Get<NEATScene>();
 		Assert.NotNull( component );
 		component.BeginSimulation( this, draw );
 		return component;
 	}
 
-	//public void RemoveScene( NEATScene scene )
-	//{
-	//	scene.Destroy();
-	//	Scenes.Remove( scene.GameObject );
-	//}
-
-	private void ResetScenes()
+	public async Task<NEATScene> AllocateBatchedScene( IGraphDraw draw )
 	{
-		NumActiveScenes = 0;
+		int index = NumScenes++;
+		int batchIndex = index / NumScenesPerBatch;
 
+		// Spinlock until our batch is ready.
+		// I'd like to use a semaphore, but that's not whitelisted...
+		while ( Running && batchIndex != CurBatchIndex )
+		{
+			await GameTask.DelaySeconds( 1.0f );
+		}
+
+		if ( !Running )
+			return null;
+
+		return AllocateScene( draw );
+	}
+
+
+	public void ReleaseScene( NEATScene scene )
+	{
+		scene.EndSimulation();
+
+		if (--NumScenesInBatch == 0)
+		{
+			// Let some new scenes in.
+			CurBatchIndex++;
+		}
+	}
+
+	private void ResetBatches()
+	{
+		CurBatchIndex = 0;
+		NumScenes = 0;
+		NumScenesInBatch = 0;
 		SceneLeaderboard.Clear();
-
-		//foreach ( var scene in Scenes )
-		//	scene.Destroy();
-		//Scenes.Clear();
 	}
 
 	private void UpdateSceneLeaderboard()
@@ -475,9 +518,48 @@ public class NEATManager : Component
 	}
 
 
-	public async Task Train()
+	public IEnumerable<string> GetModels()
 	{
-		ResetScenes();
+		if ( !FileSystem.Data.DirectoryExists( "model" ) )
+			return new string[0];
+
+		return FileSystem.Data
+			.FindDirectory( "model" )
+			.OrderByDescending(x => int.Parse( x.Substring(3) ) );
+	}
+
+	public bool ModelQueued { get; private set; } = false;
+	public void LoadModel( string model )
+	{
+		if ( ModelQueued )
+			return;
+		ModelQueued = true;
+
+		_ = QueueModel( model );
+	}
+
+	public async Task QueueModel( string model )
+	{
+		// Wait for the existing model to finish.
+		if ( RunTask != null )
+		{
+			Running = false;
+			await RunTask;
+			RunTask = null;
+		}
+
+		RunTask = RunModel( model );
+		ModelQueued = false;
+	}
+
+	public async Task RunModel(string loadModel)
+	{
+		if ( Running )
+			return;
+
+		IsTraining = (loadModel == null);
+
+		ResetBatches();
 
 		// Training loop.
 
@@ -502,14 +584,13 @@ public class NEATManager : Component
 
 		//Generation = 0;
 
-		const bool loadedFromFile = false;
-		if (loadedFromFile)
+		if ( loadModel != null )
 		{
 			// Create a MetaNeatGenome.
 			var metaNeatGenome = NeatUtils.CreateMetaNeatGenome( experiment );
 
 			NeatPopulationLoader<double> loader = new( metaNeatGenome );
-			string populationFolderPath = Path.Combine( "model", "gen199" );
+			string populationFolderPath = Path.Combine( "model", loadModel );
 			List<NeatGenome<double>> genomeList = loader.LoadFromFolder( populationFolderPath );
 
 			INeatGenomeBuilder<double> genomeBuilder = NeatGenomeBuilderFactory<double>.Create( metaNeatGenome );
@@ -527,7 +608,9 @@ public class NEATManager : Component
 			ea = NeatUtils.CreateNeatEvolutionAlgorithm( experiment );
 		}
 
+
 		await ea.Initialise();
+
 
 		CurStats = ea.Stats;
 
@@ -535,9 +618,10 @@ public class NEATManager : Component
 		CurPopStats = neatPop.Stats;
 
 		// Begin running.
-		while ( true )
+		Running = true;
+		while ( Running )
 		{
-			ResetScenes();
+			ResetBatches();
 
 			//foreach ( var scene in Scenes )
 			//	scene.Components.Get<NEATScene>().Start();
@@ -546,7 +630,7 @@ public class NEATManager : Component
 			await ea.PerformOneGeneration();
 			Log.Info( $"{ea.Stats.Generation} {neatPop.Stats.BestFitness.PrimaryFitness} {neatPop.Stats.MeanComplexity} {ea.ComplexityRegulationMode} {neatPop.Stats.MeanFitness}" );
 
-			if ( !loadedFromFile )
+			if ( loadModel == null )
 			{
 				Log.Info("Saving...");
 				string dir = $"model";

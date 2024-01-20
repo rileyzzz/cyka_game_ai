@@ -5,6 +5,19 @@ GenomeGallery {
     right: 0;
     bottom: 0;
 
+    .mainheader {
+        position: absolute;
+        top: 32px;
+        width: 100%;
+        /*justify-content: center;*/
+        padding-left: 32px;
+        font-family: Poppins;
+        font-weight: bold;
+        font-size: 36px;
+        color: #bbbbbb;
+        text-shadow: 0 0 8px black;
+    }
+
     .grid {
         margin: auto;
         flex-wrap: wrap;
@@ -14,9 +27,10 @@ GenomeGallery {
         overflow: scroll;
 
         .item {
-            width: 180px;
-            height: 180px;
+            width: 210px;
+            height: 210px;
             margin: 4px;
+            /*padding: 32px;*/
             pointer-events: all;
         }
     }
@@ -26,23 +40,73 @@ GenomeGallery {
         right: 8px;
         height: 100%;
         justify-content: center;
-
         flex-direction: column;
         font-family: Poppins;
-        font-size: 24px;
-        color: white;
-        text-shadow: 0 0 8px black;
+        font-size: 18px;
+        color: #bbbbbb;
+        text-shadow: 0 0 4px black;
 
         .inner {
             flex-direction: column;
             border-radius: 8px;
             background-color: #111111a3;
-            padding: 16px;
+            padding: 12px;
         }
+
+        .models {
+            color: white;
+            margin-top: 16px;
+            flex-direction: column;
+
+            .model-header {
+                /*font-weight: bold;*/
+                color: #bbbbbb;
+                padding-left: 2px;
+            }
+
+            .model-list {
+                margin-top: 2px;
+                flex-direction: column;
+                overflow: scroll;
+                max-height: 256px;
+                background-color: #0d0d0d7e;
+                border-radius: 2px;
+
+                .model-item {
+                    pointer-events: all;
+                    font-size: 16px;
+                    padding: 2px 2px 2px 4px;
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    border: 1px solid #121212;
+                    border-radius: 2px;
+                    /*transition: all 0.05s linear;*/
+                }
+
+                .selected {
+                    background-color: #393da8;
+                }
+            }
+
+            .model-button {
+                margin-top: 8px;
+                border-radius: 4px;
+                padding: 2px 2px 2px 8px;
+                background-color: #393da8;
+                transition: all 0.2s linear;
+                pointer-events: all;
+
+                &:hover {
+                    background-color: #6367ce;
+                }
+            }
+        }
+
 
         span {
             margin-left: auto;
-            padding-left: 32px;
+            padding-left: 40px;
+            color: white;
         }
     }
 }

@@ -85,7 +85,10 @@ public class CykaBlackBoxEvaluator : IPhenomeEvaluator<IBlackBox<double>>
 	// Fitness is simply the current score.
 	async Task<FitnessInfo> IPhenomeEvaluator<IBlackBox<double>>.Evaluate( IBlackBox<double> phenome )
 	{
-		var scene = Manager.AllocateScene( phenome );
+		var scene = await Manager.AllocateBatchedScene( phenome );
+
+		if ( scene == null )
+			return new FitnessInfo( 0 );
 
 		// Evaluate a single iteration of the model.
 		while ( scene.CanRun() )
@@ -113,8 +116,7 @@ public class CykaBlackBoxEvaluator : IPhenomeEvaluator<IBlackBox<double>>
 
 		long score = scene.GetFitnessScore();
 
-		scene.EndSimulation();
-		// Manager.RemoveScene( scene );
+		Manager.ReleaseScene( scene );
 		return new FitnessInfo( (double)score );
 	}
 }
